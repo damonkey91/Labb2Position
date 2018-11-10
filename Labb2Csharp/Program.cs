@@ -35,6 +35,25 @@ namespace Labb2Csharp
             circleList.Add(new Position(2, 2));
             circleList.Add(new Position(3, 3));
             Console.WriteLine(circleList.CircleContent(new Position(5, 5), 4) + "\n");
+
+            // Tar bort lista1 från lista 3. Utskrift: (1,2), (3,6)
+            SortedPosList list3 = new SortedPosList();
+            list3.Add(new Position(3, 7));
+            list3.Add(new Position(1, 2));
+            list3.Add(new Position(3, 6));
+            list3.Add(new Position(2, 3));
+            Console.WriteLine((list3 - list1) + "subtract" + "\n");
+
+            //Spara lista till fil. Utskrift: (2,1),(4,6),(5,8) list saved to file
+            SortedPosList list4 = new SortedPosList("positionlist");
+            list4.Add(new Position(2, 1));
+            list4.Add(new Position(4, 6));
+            list4.Add(new Position(5, 8));
+            Console.WriteLine(list4 + " list saved to file" + "\n");
+
+            //Ladda lista från fil. Utskrift: (2,1),(4,6),(5,8) list loaded from file
+            SortedPosList list5 = new SortedPosList("positionlist");
+            Console.WriteLine(list5 + " list loaded from file");
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Labb2Csharp
 {
     public class SortedPosList
     {
-
+        private string FilePath { get; set; }
         private List<Position> PositionList { get; set; }
         public Position this[int index] 
         { 
@@ -20,6 +20,13 @@ namespace Labb2Csharp
             PositionList = new List<Position>();
         }
 
+        public SortedPosList(string filePath)
+        {
+            PositionList = new List<Position>();
+            Load(filePath);
+            FilePath = filePath;
+        }
+
         public int Count()
         {
             return PositionList.Count;
@@ -32,10 +39,12 @@ namespace Labb2Csharp
                 if (PositionList[i].Length() > pos.Length())
                 {
                     PositionList.Insert(i, pos);
+                    Save(FilePath);
                     return;
                 }
             }
             PositionList.Insert(Count(), pos);
+            Save(FilePath);
         }
 
         public bool Remove(Position pos)
@@ -45,6 +54,7 @@ namespace Labb2Csharp
                 if (pos.XPosition == PositionList[i].XPosition && pos.YPosition == PositionList[i].YPosition)
                 {
                     PositionList.RemoveAt(i);
+                    Save(FilePath);
                     return true;
                 }
             }
@@ -93,6 +103,67 @@ namespace Labb2Csharp
         public override string ToString()
         {
             return string.Join(",", PositionList);
+        }
+
+        public static SortedPosList operator -(SortedPosList s1, SortedPosList s2)
+        { 
+            for (int i = 0; i < s1.Count(); i++)
+            {
+                foreach (Position position2 in s2.PositionList)
+                {
+                    if (s1[i].Equals(position2))
+                    {
+                        s1.Remove(s1[i]);
+                    }
+                }
+            }
+            return s1;
+        }
+
+        private void Save(string filePath)
+        {
+            if (filePath != null)
+            {
+                System.IO.File.WriteAllText(filePath, ListToFileString());
+            }
+        }
+
+        private void Load(string filePath)
+        {
+            try
+            {
+                string text = System.IO.File.ReadAllText(filePath);
+                text = text.Replace("(", "");
+                text = text.Replace(")", "");
+                text = text.Trim();
+                string[] spliText = text.Split("\n");
+                StringTopList(spliText);
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                Console.WriteLine("File dosen't exist");
+            }
+        }
+
+        private string ListToFileString()
+        {
+            string text = "";
+            foreach (Position position in PositionList)
+            {
+                text += position + "\n";
+            }
+            return text;
+        }
+
+        private void StringTopList(string[] splitText)
+        {
+            List<Position> tempList = new List<Position>();
+            foreach (string tt in splitText)
+            {
+                string[] cords = tt.Split(",");
+                tempList.Add(new Position(int.Parse(cords[0]), int.Parse(cords[1])));
+            }
+            PositionList = tempList;
         }
     }
 }
